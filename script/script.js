@@ -31,7 +31,7 @@ const createTable = () => {
         const tr = document.createElement('tr');
         for (let z = 0; z < 10; z++) {
             const td = document.createElement('td');
-            td.classList.add('td_style');
+            td.classList.add('td-style');
             td.setAttribute('id', contId);
             contId++;
             tr.appendChild(td);
@@ -58,27 +58,49 @@ const returnAllTD = (arrTd) => {
     return arr;
 }
 
-const youWin = () => {
-    alert('você achou uma palavra')
+// FUNCAO QUE EXIBIRA ALGO QUANDO ACHAR A PALAVRA
+const youWin = (event) => {
+    const element = event.target;
+    let dig = element.id[0];
+    for(let i = 0;i < elementsPositionsWin.length; i++){
+        if(dig === elementsPositionsWin[i].toString()[0]){
+            const td = document.getElementById(''+elementsPositionsWin[i]);
+            td.classList.add('td-style-win');
+        }
+    }
+    numberVictory++;
+    if(numberVictory === 3){
+        const main = document.getElementById('box')
+        const button = document.createElement('button');
+        button.innerText = 'Novo Jogo';
+        button.classList.add('bt-new-game');
+        button.addEventListener('click',newGame);
+        main.appendChild(button)
+    }
 }
 
 // ARRAY DE ANIMAIS
-const zoo = ['abelha', 'andorinha', 'anta', 'boi', 'babuíno', 'baleia', 'cachorro', 'camaleão', 'dromedário', 'dragão', 'ema', 'elefante', 'formiga', 'foca', 'flamingo', 'gato', 'golfinho', 'guaxinim', 'hipopótamo', 'hiena']
+const zoo = ['abelha', 'andorinha', 'anta', 'boi', 'besouro', 'baleia', 'borboleta', 'cachorro', 'carneiro', 'enguia', 'ema', 'elefante', 'formiga', 'foca', 'flamingo', 'gato', 'golfinho', 'guaxinim', 'hiena','tartaruga']
+
+// NUMERO QUE DETERMINARA A VITORIA
+let numberVictory = 0;
 
 // CRIANDO A TABELA
 createTable();
 
-// CRIANDO ARRAY DOS ID'S  DOS ELEMENTOS <td>
+// CRIANDO ARRAY COM TODOS ID'S  DOS ELEMENTOS <td>
 const arrTd = document.getElementsByTagName('td');
 const arrTdId = returnAllTD(arrTd);
+
+// CRIANDO ARRAY COM ID'S  DOS ELEMENTOS <td> EM QUE AS PALAVRAS SE ENCONTRAM
+const elementsPositionsWin = [];
 
 // SELECIONA O ANIMAL E A REMOVE PARA NAO HAVER DUPLICACAO DE ANIMAIS NO TABULEIRO
 const beast1 = zoo.splice(Math.floor(Math.random() * zoo.length), 1).toString();
 const beast2 = zoo.splice(Math.floor(Math.random() * zoo.length), 1).toString();
 const beast3 = zoo.splice(Math.floor(Math.random() * zoo.length), 1).toString();
 
-// ARMAZENARA AS POSICOES ONDE ESTAO AS PALAVRAS
-const elementsPositionsWin = [];
+// let typeOfOrganization
 
 // BEAST 1
 let selectId1 = randomPosition(beast1);
@@ -130,3 +152,4 @@ for (let i = 0; i < elementsPositionsWin.length; i++) {
     const element = document.getElementById(elementsPositionsWin[i]);
     element.addEventListener('click', youWin)
 }
+

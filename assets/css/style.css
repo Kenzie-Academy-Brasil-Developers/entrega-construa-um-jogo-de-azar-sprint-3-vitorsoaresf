@@ -1,6 +1,7 @@
 .container{
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    /* justify-content: center; */
     align-items: center;
     width: 100%;
     height: 200px;
@@ -9,28 +10,31 @@
     height: 620px;
 }
 
+.container__img{
+    margin-top: 70px;
+    overflow: hidden;
+    width: 250px;
+    height: 160px;
+}
+
+.container__img img{
+    width: 100%;
+}
+
 .container__table{
-    /* border: 5px solid green; */
-    /* border-radius: 25px; */
+    border: 10px solid #ffb703;
+    border-radius: 25px;
     border-collapse: separate;
     border-spacing: 4px;
     background-color: rgba(177, 177, 177, 0.8);
-    /* overflow:hidden;
-    border-collapse:separate;
-    border: 5px solid #606c38;
-    -webkit-border-radius: 25px;
-       -moz-border-radius: 25px;
-            border-radius: 25px; */
 }
 
-.td_style{
+.td-style{
     width: 25px;
     height: 20px;
-    /* border: 2px solid rgb(0, 82, 0); */
     border-radius: 3px;
     text-align: center;
     font-size: 1.2rem;
-    /* background-color: #ddbea9; */
     color: #9c6644;
     font-weight: bold;
     text-transform: uppercase;
@@ -38,13 +42,51 @@
     cursor: pointer;
 }
 
-.td_style:hover{
-    background-color: yellow;
+.td-style:hover{
+    background-color: rgb(119, 119, 119);
+    color: white;
+}
+
+.td-style-win{
+    background-color: #ade8f4;
+}
+
+.bt-new-game{
+    margin-top: 20px;
+    padding: 10px;
+    border: 2px solid rgb(0, 144, 0);
+    border-radius: 10px;
+    background-color: rgb(8, 212, 8);
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+
 }
 
 @media (min-width:500px){
-    .td_style{
+    .td-style{
         width: 40px;
+        /* height: 20px; */
+        /* border: 2px solid black; */
+    } 
+
+    .container__img{
+        margin-top: 40px;
+        overflow: hidden;
+        width: 350px;
+        height: 220px;
+    }
+    
+    .container__img img{
+        width: 100%;
+    }
+}
+
+@media (min-width:1000px){
+    .td-style{
+        width: 80px;
         /* height: 20px; */
         /* border: 2px solid black; */
     }   
