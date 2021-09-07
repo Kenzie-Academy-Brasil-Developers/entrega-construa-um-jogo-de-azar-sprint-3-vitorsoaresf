@@ -1,0 +1,17 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: antiquewhite;
+    height: 620px;
+}
+
+.container__table{
+    border: 2px solid rgb(246, 0, 0);
+}
+
+.style_td{
+    width: 20px;
+    height: 20px;
+    border: 2px solid black;
+}
