@@ -1,8 +1,8 @@
-// CRIANDO ARRAY COM ID'S  DOS ELEMENTOS <td> EM QUE AS PALAVRAS SE ENCONTRAM
+// CRIANDO ARRAY COM GRUPOS DE ID'S  DOS ELEMENTOS <td> EM QUE AS PALAVRAS SE ENCONTRAM
 let elementsPositionsWin = []
 
 // NUMERO QUE DETERMINARA A VITORIA
-let numberVictory = 0;
+let discoverNumber = 0;
 
 
 //FUNCAO CRIA A TABELA DA APP
@@ -54,7 +54,8 @@ const removeIdsLine = (digit, arrTdId) => {
     return arrTdId;
 }
 
-const removeChildrensTable = () =>{
+//FUNCAO QUE ZERA A  TABELA TODAS AS VEZES QUE COMECAR O NOVO JOGO
+const removeChildrensTable = () => {
     const app = document.getElementById('container');
     const tableApp = document.getElementById('table');
     tableApp.innerText = '';
@@ -72,49 +73,56 @@ const returnAllTD = (arrTd) => {
 }
 
 // FUNCAO QUE EXIBIRA ALGO QUANDO ACHAR A PALAVRA
-const youWin = (event) => {
+const youFind = (event) => {
     const element = event.target;
+
     let dig = element.id[0];
+    let groupId = [];
+
+    // SELECIONANDO O GRUPO EM QUE FOI PEGO O EVENTO DE CLICK
     for (let i = 0; i < elementsPositionsWin.length; i++) {
-        if (dig === elementsPositionsWin[i].toString()[0]) {
-            const td = document.getElementById('' + elementsPositionsWin[i]);
-            td.classList.add('td-style-win');
+        let arrAux = elementsPositionsWin[i];
+        for (let z = 0; z < arrAux.length; z++) {
+            if (arrAux.includes(Number.parseInt(element.id))) {
+                groupId.push(arrAux[z]);
+            }
         }
     }
 
-    // REMOVE O EVENTO DEPOIS QUE JÁ FOI SELECIONADO P/ EVITAR CLICAR 
-    // TRES VEZES E GANHAR O JOGO
-    dig = element.id[0]
-    for (let i = 0; i < elementsPositionsWin.length; i++) {
-        if (dig === elementsPositionsWin[i].toString()[0]) {
-            const td = document.getElementById('' + elementsPositionsWin[i]);
-            td.removeEventListener('click',youWin,false);
-        }
+    // PINTANDO O GRUPO
+    for (let i = 0; i < groupId.length; i++) {
+        const td = document.getElementById('' + groupId[i]);
+        td.classList.add('td-style-win');
     }
-    
 
-    numberVictory++;
-    if (numberVictory === 3) {
+    // DESABILITANDO O EVENTO DO GRUPO
+    for (let i = 0; i < groupId.length; i++) {
+        const td = document.getElementById('' + groupId[i]);
+        td.removeEventListener('click', youFind, false);
+    }
+
+
+    discoverNumber++;
+    if (discoverNumber === 3) {
         const button = document.getElementById('bt-new');
         button.style.display = 'block';
-        button.addEventListener('click', newGame);        
+        button.addEventListener('click', newGame);
     }
 }
 
 const newGame = () => {
     elementsPositionsWin = [];
-    numberVictory = 0;
+    discoverNumber = 0;
 
-    // ARRAY DE ANIMAIS
+    // ARRAY DE ANIMAIS-------------------------------------------------------------------------------------
     const zoo = ['abelha', 'andorinha', 'anta', 'boi', 'besouro', 'baleia', 'borboleta', 'cachorro', 'carneiro', 'enguia', 'ema', 'elefante', 'formiga', 'foca', 'flamingo', 'gato', 'golfinho', 'guaxinim', 'hiena', 'tartaruga']
 
-    // ZERANDO TABELA TODAS AS VEZES QUE COMECAR O NOVO JOGO
     removeChildrensTable();
 
-    // CRIANDO A TABELA
+    // CRIANDO A TABELA-------------------------------------------------------------------------------------
     createTable();
 
-    // CRIANDO ARRAY COM TODOS ID'S  DOS ELEMENTOS <td>
+    // CRIANDO ARRAY COM TODOS ID'S  DOS ELEMENTOS <td>-----------------------------------------------------
     const arrTd = document.getElementsByTagName('td');
     let arrTdId = returnAllTD(arrTd);
 
@@ -125,7 +133,10 @@ const newGame = () => {
 
     // let typeOfOrganization
 
-    // BEAST 1
+    // ARMAZENA O GRUPO <td> QUE CONTEM O ELEMENTO----------------------------------------------------------
+    let arrGroup = [];
+
+    // BEAST 1----------------------------------------------------------------------------------------------
     let selectId1 = randomPosition(beast1, arrTdId);
     let digit = Number.parseInt(selectId1.toString()[0]) * 10;
     arrTdId = removeIdsLine(digit, arrTdId);
@@ -133,37 +144,58 @@ const newGame = () => {
 
     for (let i = 0; i < beast1.length; i++, selectId1++) {
         const element = document.getElementById(`${selectId1}`);
-        elementsPositionsWin.push(Number.parseInt(element.getAttribute('id')));
+        arrGroup.push(Number.parseInt(element.getAttribute('id')));
         element.innerText = beast1[i];
     }
 
-    // BEAST 2
-    let selectId2 = randomPosition(beast2,arrTdId);
+    elementsPositionsWin.push(arrGroup);
+    arrGroup = [];
+
+    // BEAST 2----------------------------------------------------------------------------------------------
+    let selectId2 = randomPosition(beast2, arrTdId);
     digit = Number.parseInt(selectId2.toString()[0]) * 10;
     arrTdId = removeIdsLine(digit, arrTdId);
 
     for (let i = 0; i < beast2.length; i++, selectId2++) {
         const element = document.getElementById(`${selectId2}`);
-        elementsPositionsWin.push(Number.parseInt(element.getAttribute('id')));
+        arrGroup.push(Number.parseInt(element.getAttribute('id')));
         element.innerText = beast2[i];
     }
 
-    // BEAST 3
-    let selectId3 = randomPosition(beast3,arrTdId);
+    elementsPositionsWin.push(arrGroup);
+    arrGroup = [];
+
+    // BEAST 3----------------------------------------------------------------------------------------------
+    let selectId3 = randomPosition(beast3, arrTdId);
     digit = Number.parseInt(selectId3.toString()[0]) * 10;
     arrTdId = removeIdsLine(digit, arrTdId);
 
     for (let i = 0; i < beast3.length; i++, selectId3++) {
         const element = document.getElementById(`${selectId3}`);
-        elementsPositionsWin.push(Number.parseInt(element.getAttribute('id')));
+        arrGroup.push(Number.parseInt(element.getAttribute('id')));
         element.innerText = beast3[i];
     }
 
+    elementsPositionsWin.push(arrGroup);
+    arrGroup = [];
+
+    // INSERINDO OUTRAS LETRAS NO ESPACOS VAGOS-------------------------------------------------------------
+
     let arrCompleteTable = returnAllTD(arrTd);
 
-    // INSERINDO OUTRAS LETRAS NO ESPACOS VAGOS
+
+    // CRIANDO VARIAVEL PARA PASSAR O IDS CONTIDOS EM CADA GRUPO DO ARRAY elementsPositionsWin
+    let arrAllIdSelect = [];
+    for (let i = 0; i < elementsPositionsWin.length; i++) {
+        let arrAux = elementsPositionsWin[i];
+        for (let z = 0; z < arrAux.length; z++) {
+            arrAllIdSelect.push(arrAux[z]);
+        }
+    }
+
+    // PREENCHENDO A TABELA COM LETRAS----------------------------------------------------------------------
     for (let i = 0; i < arrCompleteTable.length; i++) {
-        if (!(elementsPositionsWin.includes(arrCompleteTable[i]))) {
+        if (!(arrAllIdSelect.includes(arrCompleteTable[i]))) {
             const element = document.getElementById(`${arrCompleteTable[i]}`);
             element.innerText = String.fromCharCode(Math.floor(Math.random() * (90 - 65) + 65));
         }
@@ -171,9 +203,13 @@ const newGame = () => {
     console.log(elementsPositionsWin)
 
     // INSERINDO O EVENTO NAS <td> DE VITÓRIA
-    for (let i = 0; i < elementsPositionsWin.length; i++) {
-        const element = document.getElementById(elementsPositionsWin[i]);
-        element.addEventListener('click', youWin)
+    for (let z = 0; z < elementsPositionsWin.length; z++) {
+        let arrAux = elementsPositionsWin[z];
+        for (let i = 0; i < arrAux.length; i++) {
+            const element = document.getElementById(arrAux[i]);
+            element.addEventListener('click', youFind)
+        }
+
     }
 }
 
