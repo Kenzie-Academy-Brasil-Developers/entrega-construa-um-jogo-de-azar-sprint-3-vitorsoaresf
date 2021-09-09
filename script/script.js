@@ -286,8 +286,6 @@ const returnAllTD = (arrTd) => {
 // FUNCAO QUE EXIBIRA ALGO QUANDO ACHAR A PALAVRA
 const youFind = (event) => {
     const element = event.target;
-
-    let dig = element.id[0];
     let groupId = [];
 
     // SELECIONANDO O GRUPO EM QUE FOI PEGO O EVENTO DE CLICK
@@ -299,25 +297,27 @@ const youFind = (event) => {
             }
         }
     }
-
-    // PINTANDO O GRUPO
-    for (let i = 0; i < groupId.length; i++) {
-        const td = document.getElementById('' + groupId[i]);
-        td.classList.add('td-style-win');
-    }
-
-    // DESABILITANDO O EVENTO DO GRUPO
-    for (let i = 0; i < groupId.length; i++) {
-        const td = document.getElementById('' + groupId[i]);
-        td.removeEventListener('click', youFind, false);
-    }
-
-
-    discoverNumber++;
-    if (discoverNumber === 3) {
-        const button = document.getElementById('bt-new');
-        button.style.display = 'block';
-        button.addEventListener('click', newGame);
+    if(groupId.indexOf(Number.parseInt(element.id)) !== -1){
+        
+        // PINTANDO O GRUPO
+        for (let i = 0; i < groupId.length; i++) {
+            const td = document.getElementById('' + groupId[i]);
+            td.classList.add('td-style-win');
+        }
+    
+        // DESABILITANDO O EVENTO DO GRUPO
+        for (let i = 0; i < groupId.length; i++) {
+            const td = document.getElementById('' + groupId[i]);
+            td.removeEventListener('click', youFind, false);
+        }
+    
+    
+        discoverNumber++;
+        if (discoverNumber === 3) {
+            const button = document.getElementById('bt-new');
+            button.style.display = 'block';
+            button.addEventListener('click', newGame);
+        }
     }
 }
 
@@ -346,7 +346,7 @@ const newGame = () => {
     const beast3 = zoo.splice(Math.floor(Math.random() * zoo.length), 1).toString();
 
     // IRA DETERMINARA QUAL TIPO DE ORGAZINAZACAO SE ENCONTRARAO AS PALAVRAS: HORIZONTAL, VERTICAL OU DIAGONAL
-    let typeOfOrganization = 3//Math.floor(Math.random() * (3 - 1) + 1);
+    let typeOfOrganization = Math.floor(Math.random() * (4 - 1) + 1);
 
     // ARMAZENA O GRUPO <td> QUE CONTEM O ELEMENTO
     let arrGroup = [];
@@ -465,16 +465,17 @@ const newGame = () => {
 
     // INSERINDO O EVENTO NAS <td> DE VITÓRIA---------------------------------------------------------------
     // USO DE CAPTURING
-    for (let z = 0; z < elementsPositionsWin.length; z++) {
-        let arrAux = elementsPositionsWin[z];
-        for (let i = 0; i < arrAux.length; i++) {
-            const element = document.getElementById(arrAux[i]);
-            element.addEventListener('click', youFind)
-        }
-    }
+    // for (let z = 0; z < elementsPositionsWin.length; z++) {
+    //     let arrAux = elementsPositionsWin[z];
+    //     for (let i = 0; i < arrAux.length; i++) {
+    //         const element = document.getElementById(arrAux[i]);
+    //         element.addEventListener('click', youFind)
+    //     }
+    // }
 
-    // const tabela = document.getElementById('table');
-    // table.addEventListener('click',youFind);
+    // USO DE BUBLING
+    const tabela = document.getElementById('table');
+    table.addEventListener('click',youFind);
 
 
 }
