@@ -4,6 +4,18 @@ let elementsPositionsWin = []
 // NUMERO QUE DETERMINARA A VITORIA 
 let discoverNumber = 0;
 
+// CRIANDO ARRAY COM TODOS ELEMENTOS HTML <td>
+const arrTd = document.getElementsByTagName('td');
+
+// GUARDARA SOMENTE ID'S DAS <td>
+let arrTdId = [];
+
+// VARIAVEIS COM AS POSICOES LIMITES DA TABELA
+let limitsLeft = [1,11,21,31,41,51,61,71,81,91];
+let limitsRight = [10,20,30,40,50,60,70,80,90,100];
+let limitsTop = [1,2,3,4,5,6,7,8,9,10];
+let limitsBotton = [91,92,93,94,95,96,97,98,99,100];
+
 
 //FUNCAO CRIA A TABELA DA APP
 const createTable = () => {
@@ -39,9 +51,8 @@ const insertBeastLine = (beast, id) => {
 // FUNCAO QUE INSERE ANIMAL NO TABULEIRO VERTICALMENTE
 const insertBeastColumn = (beast, id) => {
     let arr = [];
-    console.log('id : '+id+' beast:'+beast)
     let endPosition = id + (beast.length * 10);
-    for (let i = 0; id < endPosition; i++, id+=10) {
+    for (let i = 0; id < endPosition; i++, id += 10) {
         const element = document.getElementById(`${id}`);
         arr.push(Number.parseInt(element.getAttribute('id')));
         element.innerText = beast[i];
@@ -49,18 +60,30 @@ const insertBeastColumn = (beast, id) => {
     return arr;
 }
 
+// FUNCAO QUE INSERE ANIMAL NO TABULEIRO DIAGONALMENTE
+const insertBeastDiagonal = (beast, id) => {
+    let arr = [];
+
+    for (let i = 0; i < beast.length; i++, id += 11) {
+        const element = document.getElementById(`${id}`);
+        arr.push(Number.parseInt(element.getAttribute('id')));
+        element.innerText = beast[i];
+    }
+
+    return arr;
+}
 
 // FUNCAO QUE RETORNA UM ID PARA QUE A PALAVRA SEJA A PARTIR DELE INSERIDA (HORIZONTAL)
-const randomPositionLine = (word, arrTdId) => {
+const randomPositionLine = (beast) => {
     let arr = [];
 
     // DETERMINANDO UMA POSICAO QUE CAIBA A STRING E NAO A QUEBRE EM OUTRA LINHA
-    let strWidth = Math.floor(Math.random() * ((11 - word.length) - 1) + 1);
+    let strWidth = Math.floor(Math.random() * ((11 - beast.length) - 1) + 1);
     let positionSelect = 0;
 
     //PREENCHENDO COM POSSIVEIS LOCALIZACOES QUE A STRING PODE OCUPAR
     for (let i = 0; i < 100; i += 10) {
-        if (arrTdId.indexOf(i + strWidth) !== -1) {
+        if (arrTdId.includes(i + strWidth) === true) {
             arr.push(i + strWidth);
         }
     }
@@ -73,19 +96,26 @@ const randomPositionLine = (word, arrTdId) => {
 }
 
 // FUNCAO QUE RETORNA UM ID PARA QUE A PALAVRA SEJA A PARTIR DELE INSERIDA (VERTICAL)
-const randomPositionColumn = (word, arrTdId) => {
+const randomPositionColumn = (beast) => {
     let arr = [];
 
-    // DETERMINANDO UMA POSICAO QUE CAIBA A STRING E NAO A QUEBRE EM OUTRA LINHA
-    let strWidth = Math.floor(Math.random() * ((11 - word.length) - 1) + 1);
+    // DETERMINANDO UMA POSICAO QUE CAIBA A STRING E NAO A QUEBRE EM OUTRA COLUNA
+    let strWidth = Math.floor(Math.random() * ((11 - beast.length) - 1) + 1);
+    
     let positionSelect = 0;
 
+    // ME GARANTE DE NAO DISPONIBILIZAR A MESMA COLUNA DUAS VEZES
+    for(;arrTdId.indexOf(strWidth) === -1;){
+        strWidth = Math.floor(Math.random() * ((11 - beast.length) - 1) + 1);
+    }
+
     //PREENCHENDO COM POSSIVEIS LOCALIZACOES QUE A STRING PODE OCUPAR
-    for (let i = 0; i <= 100 - (word.length * 10); i += 10) {
+    for (let i = 0; i < 100 - (beast.length * 10); i += 10) {
         if (arrTdId.indexOf(i + strWidth) !== -1) {
             arr.push(i + strWidth);
         }
     }
+
     // LENDO QUAL POSICAO A STRING IRA INICIALMENTE OCUPAR. EH SOMENTE A PRIMEIRA POSICAO QUE
     // QUE SE INICIA.
     positionSelect = Math.floor(Math.random() * arr.length);
@@ -94,22 +124,120 @@ const randomPositionColumn = (word, arrTdId) => {
     return arr[positionSelect];
 }
 
+// FUNCAO QUE RETORNA UM ID PARA QUE A PALAVRA SEJA A PARTIR DELE INSERIDA (DIAGONAL)
+const randomPositionDiagonal = (beast) => {
+    let arr = [];
+
+    // DETERMINANDO UMA POSICAO QUE CAIBA A STRING E NAO A QUEBRE EM OUTRA DIAGONAL
+    let strWidth = Math.floor(Math.random() * ((((111 - beast.length) - (beast.length * 10)) - 1) + 1));
+    let positionSelect = 0;
+    let endposition = ((111 - beast.length) - (beast.length * 10));
+
+    //PREENCHENDO COM POSSIVEIS LOCALIZACOES QUE A STRING PODE OCUPAR
+    for (let i = strWidth; i <= endposition; i++) {
+        if (arrTdId.indexOf(i) !== -1) {
+            arr.push(i);
+        }
+    }
+
+    // NEM TODAS AS POSICOES A BEAST IRA CABER,POR ISSO É PRECISO FILTRAR 
+    let arrResult = []
+    arr.filter(element=>{
+        if(element < 10){
+            if(element <= (11 - beast.length)){
+                arrResult.push(element);
+                arrTdId.splice(arrTdId.indexOf(element),1);
+            }
+        }else{
+            if(Number.parseInt(element.toString()[1]) === 0){}
+            else if(Number.parseInt(element.toString()[1]) <= (11 - beast.length)){
+                arrResult.push(element);
+                arrTdId.splice(arrTdId.indexOf(element),1);
+            }
+        }
+    });
+
+    // LENDO QUAL POSICAO A STRING IRA INICIALMENTE OCUPAR. EH SOMENTE A PRIMEIRA POSICAO QUE
+    // QUE SE INICIA.
+    positionSelect = Math.floor(Math.random() * arrResult.length);
+
+    // RETORNA O ID SELECIONADO
+    return arrResult[positionSelect];
+}
+
 // FUNCAO QUE GARANTE QUE ELEMENTOS NAO OCUPEM A MESMA LINHA E POR ISSO RETIRA TODOS
 // OS ID'S (arrTdId) DAS <td> DA LINHA
-const removeIdsLine = (digit, arrTdId) => {
-    for (let i = 0; i < 10; i++, digit++) {
-        arrTdId.splice(arrTdId.indexOf(digit), 1)
+const removeIdsLine = (digit) => {
+    let cont = 0;
+    for (let i = digit; limitsRight.indexOf(i) === -1; i++) {
+        arrTdId.splice(arrTdId.indexOf(i), 1);
+        cont = i;
     }
+    cont++;
+    arrTdId.splice(arrTdId.indexOf(cont), 1);
+
+    cont = 0;
+    for (let i = digit; limitsLeft.indexOf(i) === -1; i--) {
+        arrTdId.splice(arrTdId.indexOf(i), 1);
+        cont = i;
+    }
+    cont--;
+    arrTdId.splice(arrTdId.indexOf(cont), 1);
+
     return arrTdId;
 }
 
-const removeIdsColumn = (digit, arrTdId) => {
-    for (let i = 0; i < 100; i+=10, digit+=10) {
-        arrTdId.splice(arrTdId.indexOf(digit), 1)
+// FUNCAO QUE GARANTE QUE ELEMENTOS NAO OCUPEM A MESMA COLUNA E POR ISSO RETIRA TODOS
+// OS ID'S (arrTdId) DAS <td> DA COLUNA
+const removeIdsColumn = (digit) => {
+    let cont = 0;
+
+    for (let i = digit + 10; limitsBotton.indexOf(i) === -1; i+=10) {
+        arrTdId.splice(arrTdId.indexOf(i), 1);
+        cont = i;
     }
+    cont+=10;
+    arrTdId.splice(arrTdId.indexOf(cont), 1);
+    cont = 0;
+    
+    if(limitsTop.indexOf(digit) !== -1){
+        arrTdId.splice(arrTdId.indexOf(digit), 1);
+    }else{
+        for (let i = digit; limitsTop.indexOf(i) === -1; i-=10) {
+            arrTdId.splice(arrTdId.indexOf(i), 1);
+            cont = i;
+        }
+        
+        cont-=10;
+        arrTdId.splice(arrTdId.indexOf(cont), 1);
+    }
+
     return arrTdId;
 }
 
+// FUNCAO QUE GARANTE QUE ELEMENTOS NAO OCUPEM A MESMA DIAGONAL E POR ISSO RETIRA TODOS
+// OS ID'S (arrTdId) DAS <td> DA DIAGONAL
+const removeIdsDiagonal = (digit) => {
+    let diagonalMain = [12,23,34,45,56,67,78,89,100];
+    
+
+    if(diagonalMain.includes(digit)){
+        digit = 0;
+    }
+    else if(digit.toString().length === 2) {        
+        for(let i = digit; limitsLeftTop.includes(digit) === false;i-=11){
+            digit = i;
+        }
+    }
+
+    for (let i = 0; limitsRightBotton.includes(digit) === false; i += 11, digit += 11) {
+        if(!(arrTdId.includes(digit))){
+            arrTdId.splice(arrTdId.indexOf(digit), 1);
+        }
+    }
+    arrTdId.splice(arrTdId.indexOf(digit), 1);
+    return arrTdId;
+}
 
 //FUNCAO QUE ZERA A  TABELA TODAS AS VEZES QUE COMECAR O NOVO JOGO
 const removeChildrensTable = () => {
@@ -176,16 +304,15 @@ const newGame = () => {
     // DEFINICAO DEVARIAVEIS--------------------------------------------------------------------------------
 
     // ARRAY DE ANIMAIS
-    const zoo = ['abelha', 'andorinha', 'anta', 'boi', 'besouro', 'baleia', 'borboleta', 'cachorro', 'carneiro', 'enguia', 'ema', 'elefante', 'formiga', 'foca', 'flamingo', 'gato', 'golfinho', 'guaxinim', 'hiena', 'tartaruga']
+    const zoo = ['abelha','arara', 'anta', 'boi', 'besouro', 'baleia', 'bode', 'cavalo', 'carneiro', 'enguia', 'ema', 'elefante', 'formiga', 'foca', 'falcão', 'gato', 'girafa', 'galinha', 'hiena', 'tatu']
 
     removeChildrensTable();
 
     // CRIANDO A TABELA
     createTable();
 
-    // CRIANDO ARRAY COM TODOS ID'S  DOS ELEMENTOS <td>
-    const arrTd = document.getElementsByTagName('td');
-    let arrTdId = returnAllTD(arrTd);
+    
+    arrTdId = returnAllTD(arrTd);
 
     // SELECIONA O ANIMAL E A REMOVE PARA NAO HAVER DUPLICACAO DE ANIMAIS NO TABULEIRO
     const beast1 = zoo.splice(Math.floor(Math.random() * zoo.length), 1).toString();
@@ -193,7 +320,7 @@ const newGame = () => {
     const beast3 = zoo.splice(Math.floor(Math.random() * zoo.length), 1).toString();
 
     // IRA DETERMINARA QUAL TIPO DE ORGAZINAZACAO SE ENCONTRARAO AS PALAVRAS: HORIZONTAL, VERTICAL OU DIAGONAL
-    let typeOfOrganization = Math.floor(Math.random() * (3 - 1) + 1);
+    let typeOfOrganization = 2//Math.floor(Math.random() * (3 - 1) + 1);
 
     // ARMAZENA O GRUPO <td> QUE CONTEM O ELEMENTO
     let arrGroup = [];
@@ -201,10 +328,8 @@ const newGame = () => {
     // ORGANIZACAO DAS PALAVRAS NA HORIZONTAL
     if (typeOfOrganization === 1) {
         // BEAST 1---------------------------------------------------------------------------------------------
-        let selectId1 = randomPositionLine(beast1, arrTdId);
-        let digit = Number.parseInt(selectId1.toString()[0]) * 10;
-        arrTdId = removeIdsLine(digit, arrTdId);
-
+        let selectId1 = randomPositionLine(beast1);
+        removeIdsLine(selectId1);
 
         arrGroup = insertBeastLine(beast1, selectId1);
 
@@ -212,9 +337,8 @@ const newGame = () => {
         arrGroup = [];
 
         // BEAST 2---------------------------------------------------------------------------------------------
-        let selectId2 = randomPositionLine(beast2, arrTdId);
-        digit = Number.parseInt(selectId2.toString()[0]) * 10;
-        arrTdId = removeIdsLine(digit, arrTdId);
+        let selectId2 = randomPositionLine(beast2);
+        removeIdsLine(selectId2);
 
         arrGroup = insertBeastLine(beast2, selectId2);
 
@@ -222,9 +346,8 @@ const newGame = () => {
         arrGroup = [];
 
         // BEAST 3---------------------------------------------------------------------------------------------
-        let selectId3 = randomPositionLine(beast3, arrTdId);
-        digit = Number.parseInt(selectId3.toString()[0]) * 10;
-        arrTdId = removeIdsLine(digit, arrTdId);
+        let selectId3 = randomPositionLine(beast3);
+        removeIdsLine(selectId3);
 
         arrGroup = insertBeastLine(beast3, selectId3);
 
@@ -233,33 +356,60 @@ const newGame = () => {
     }
     // ORGANIZACAO DAS PALAVRAS NA VERTICAL
     else if (typeOfOrganization === 2) {
+
         // BEAST 1---------------------------------------------------------------------------------------------
-        let selectId1 = randomPositionColumn(beast1, arrTdId);
-        arrTdId = removeIdsColumn(selectId1, arrTdId);
+        let selectId1 = randomPositionColumn(beast1);
+        removeIdsColumn(selectId1);
+
         arrGroup = insertBeastColumn(beast1, selectId1);
 
         elementsPositionsWin.push(arrGroup);
         arrGroup = [];
 
         // BEAST 2---------------------------------------------------------------------------------------------
-        let selectId2 = randomPositionColumn(beast2, arrTdId);
-        arrTdId = removeIdsColumn(selectId2, arrTdId);
+        let selectId2 = randomPositionColumn(beast2);
+        removeIdsColumn(selectId2);
+
         arrGroup = insertBeastColumn(beast2, selectId2);
 
         elementsPositionsWin.push(arrGroup);
         arrGroup = [];
 
         // BEAST 3---------------------------------------------------------------------------------------------
-        let selectId3 = randomPositionColumn(beast3, arrTdId);
-        arrTdId = removeIdsColumn(selectId3, arrTdId);
+        let selectId3 = randomPositionColumn(beast3);
+        removeIdsColumn(selectId3);
+
         arrGroup = insertBeastColumn(beast3, selectId3);
 
         elementsPositionsWin.push(arrGroup);
         arrGroup = [];
     }
     // ORGANIZACAO DAS PALAVRAS NA DIAGONAL
-    else {
-        
+    else if (typeOfOrganization === 3) {
+        // BEAST 1---------------------------------------------------------------------------------------------
+        let selectId1 = randomPositionDiagonal(beast1, arrTdId);
+        removeIdsDiagonal(selectId1, arrTdId, beast1);
+        arrGroup = insertBeastDiagonal(beast1, selectId1);
+
+        elementsPositionsWin.push(arrGroup);
+        arrGroup = [];
+
+        // BEAST 2---------------------------------------------------------------------------------------------
+        let selectId2 = randomPositionDiagonal(beast2, arrTdId);
+        removeIdsDiagonal(selectId2, arrTdId, beast2);
+        arrGroup = insertBeastDiagonal(beast2, selectId2);
+
+        elementsPositionsWin.push(arrGroup);
+        arrGroup = [];
+
+        // BEAST 2---------------------------------------------------------------------------------------------
+        let selectId3 = randomPositionDiagonal(beast3, arrTdId);
+        removeIdsDiagonal(selectId3, arrTdId, beast3);
+        arrGroup = insertBeastDiagonal(beast3, selectId3);
+
+        elementsPositionsWin.push(arrGroup);
+        arrGroup = [];
+
     }
 
     // INSERINDO OUTRAS LETRAS NO ESPACOS VAGOS-------------------------------------------------------------
@@ -283,7 +433,7 @@ const newGame = () => {
             element.innerText = String.fromCharCode(Math.floor(Math.random() * (90 - 65) + 65));
         }
     }
-    console.log(elementsPositionsWin)
+    console.log(elementsPositionsWin);
 
     // INSERINDO O EVENTO NAS <td> DE VITÓRIA---------------------------------------------------------------
     for (let z = 0; z < elementsPositionsWin.length; z++) {
