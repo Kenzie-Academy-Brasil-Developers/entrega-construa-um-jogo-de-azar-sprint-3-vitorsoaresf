@@ -1,5 +1,5 @@
 // CRIANDO ARRAY COM GRUPOS DE ID'S  DOS ELEMENTOS <td> EM QUE AS PALAVRAS SE ENCONTRAM
-let elementsPositionsWin = []
+let elementsPositionsWin = [];
 
 // NUMERO QUE DETERMINARA A VITORIA 
 let discoverNumber = 0;
@@ -287,6 +287,9 @@ const returnAllTD = (arrTd) => {
 const youFind = (event) => {
     const element = event.target;
     let groupId = [];
+    
+    // VARIAVEL PARA EXCLUIR O GRUPO 
+    let group = 0;
 
     // SELECIONANDO O GRUPO EM QUE FOI PEGO O EVENTO DE CLICK
     for (let i = 0; i < elementsPositionsWin.length; i++) {
@@ -294,10 +297,12 @@ const youFind = (event) => {
         for (let z = 0; z < arrAux.length; z++) {
             if (arrAux.includes(Number.parseInt(element.id))) {
                 groupId.push(arrAux[z]);
+                group = i;
             }
         }
     }
     if(groupId.indexOf(Number.parseInt(element.id)) !== -1){
+        console.log(elementsPositionsWin.splice(group,1));
         
         // PINTANDO O GRUPO
         for (let i = 0; i < groupId.length; i++) {
@@ -311,7 +316,7 @@ const youFind = (event) => {
             td.removeEventListener('click', youFind, false);
         }
     
-    
+        
         discoverNumber++;
         if (discoverNumber === 3) {
             const button = document.getElementById('bt-new');
@@ -461,9 +466,10 @@ const newGame = () => {
             element.innerText = String.fromCharCode(Math.floor(Math.random() * (90 - 65) + 65));
         }
     }
-    console.log(elementsPositionsWin);
+    // AQUI ESTA O SEGREDO EH SO DESCOMENTAR
+    // console.log(elementsPositionsWin);
 
-    // INSERINDO O EVENTO NAS <td> DE VITÓRIA---------------------------------------------------------------
+    //INSERINDO O EVENTO NAS <td> DE VITÓRIA---------------------------------------------------------------
     // USO DE CAPTURING
     // for (let z = 0; z < elementsPositionsWin.length; z++) {
     //     let arrAux = elementsPositionsWin[z];
