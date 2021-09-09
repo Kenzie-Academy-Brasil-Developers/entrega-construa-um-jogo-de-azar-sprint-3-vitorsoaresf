@@ -253,15 +253,20 @@ const removeIdsDiagonal = (digit) => {
             arrTdId.splice(arrTdId.indexOf(cont), 1);
         }
     }
-    // alert('aqui');
-    
-    cont = digit;
-    for (let i = digit; limitsRightBotton.indexOf(i) === -1; i += 11) {
-        arrTdId.splice(arrTdId.indexOf(i), 1);
-        cont = i;
+    // SE FOR ALGUM ID DA DIAGONAL PRINCIPAL
+    if(digit === 0){
+        for (let i = 0; i < diagonalMain.length; i++) {
+            arrTdId.splice(arrTdId.indexOf(diagonalMain[i]), 1);
+        }
+    }else{
+        cont = digit;
+        for (let i = digit; limitsRightBotton.indexOf(i) === -1; i += 11) {
+            arrTdId.splice(arrTdId.indexOf(i), 1);
+            cont = i;
+        }
+        cont += 11;
+        arrTdId.splice(arrTdId.indexOf(cont), 1);
     }
-    cont += 11;
-    arrTdId.splice(arrTdId.indexOf(cont), 1);
     return arrTdId;
 }
 
@@ -351,7 +356,7 @@ const newGame = () => {
     const beast3 = zoo.splice(Math.floor(Math.random() * zoo.length), 1).toString();
 
     // IRA DETERMINARA QUAL TIPO DE ORGAZINAZACAO SE ENCONTRARAO AS PALAVRAS: HORIZONTAL, VERTICAL OU DIAGONAL
-    let typeOfOrganization = Math.floor(Math.random() * (4 - 1) + 1);
+    let typeOfOrganization = 3//Math.floor(Math.random() * (4 - 1) + 1);
 
     // ARMAZENA O GRUPO <td> QUE CONTEM O ELEMENTO
     let arrGroup = [];
@@ -467,7 +472,7 @@ const newGame = () => {
         }
     }
     // AQUI ESTA O SEGREDO EH SO DESCOMENTAR
-    // console.log(elementsPositionsWin);
+    console.log(elementsPositionsWin);
 
     //INSERINDO O EVENTO NAS <td> DE VITÓRIA---------------------------------------------------------------
     // USO DE CAPTURING
