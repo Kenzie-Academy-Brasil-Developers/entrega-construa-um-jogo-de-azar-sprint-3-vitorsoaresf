@@ -11,10 +11,12 @@ const arrTd = document.getElementsByTagName('td');
 let arrTdId = [];
 
 // VARIAVEIS COM AS POSICOES LIMITES DA TABELA
-let limitsLeft = [1,11,21,31,41,51,61,71,81,91];
-let limitsRight = [10,20,30,40,50,60,70,80,90,100];
-let limitsTop = [1,2,3,4,5,6,7,8,9,10];
-let limitsBotton = [91,92,93,94,95,96,97,98,99,100];
+let limitsLeft = [1, 11, 21, 31, 41, 51, 61, 71, 81, 91];
+let limitsRight = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+let limitsTop = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let limitsBotton = [91, 92, 93, 94, 95, 96, 97, 98, 99, 100];
+let limitsLeftTop = [1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+let limitsRightBotton = [10, 20, 30, 40, 50, 60, 70, 80, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100];
 
 
 //FUNCAO CRIA A TABELA DA APP
@@ -101,11 +103,11 @@ const randomPositionColumn = (beast) => {
 
     // DETERMINANDO UMA POSICAO QUE CAIBA A STRING E NAO A QUEBRE EM OUTRA COLUNA
     let strWidth = Math.floor(Math.random() * ((11 - beast.length) - 1) + 1);
-    
+
     let positionSelect = 0;
 
     // ME GARANTE DE NAO DISPONIBILIZAR A MESMA COLUNA DUAS VEZES
-    for(;arrTdId.indexOf(strWidth) === -1;){
+    for (; arrTdId.indexOf(strWidth) === -1;) {
         strWidth = Math.floor(Math.random() * ((11 - beast.length) - 1) + 1);
     }
 
@@ -133,7 +135,14 @@ const randomPositionDiagonal = (beast) => {
     let positionSelect = 0;
     let endposition = ((111 - beast.length) - (beast.length * 10));
 
+    // ME GARANTE DE NAO DISPONIBILIZAR A MESMA COLUNA DUAS VEZES
+    for (; arrTdId.indexOf(strWidth) === -1;) {
+        console.log('entrou')
+        strWidth = Math.floor(Math.random() * ((((111 - beast.length) - (beast.length * 10)) - 1) + 1));
+    }
+
     //PREENCHENDO COM POSSIVEIS LOCALIZACOES QUE A STRING PODE OCUPAR
+    // FILTRAGEM POR LINHA
     for (let i = strWidth; i <= endposition; i++) {
         if (arrTdId.indexOf(i) !== -1) {
             arr.push(i);
@@ -141,18 +150,23 @@ const randomPositionDiagonal = (beast) => {
     }
 
     // NEM TODAS AS POSICOES A BEAST IRA CABER,POR ISSO É PRECISO FILTRAR 
+    // FILTRAGEM POR COLUNA
     let arrResult = []
-    arr.filter(element=>{
-        if(element < 10){
-            if(element <= (11 - beast.length)){
+    arr.filter(element => {
+        if (element < 10) {
+            if (element <= (11 - beast.length)) {
                 arrResult.push(element);
-                arrTdId.splice(arrTdId.indexOf(element),1);
+                // arrTdId.splice(arrTdId.indexOf(element),1);
             }
-        }else{
-            if(Number.parseInt(element.toString()[1]) === 0){}
-            else if(Number.parseInt(element.toString()[1]) <= (11 - beast.length)){
+        } else {
+            // NENHUMA POSICAO COM TERMINACAO DE 0(10,20,30...) NOS INTERESSA
+            // POIS NENHUMA PALAVRA EH FORMADA COM APENAS UMA LETRA
+            if (Number.parseInt(element.toString()[1]) === 0) {
+                ;
+            }
+            else if (Number.parseInt(element.toString()[1]) <= (11 - beast.length)) {
                 arrResult.push(element);
-                arrTdId.splice(arrTdId.indexOf(element),1);
+                // arrTdId.splice(arrTdId.indexOf(element),1);
             }
         }
     });
@@ -192,23 +206,23 @@ const removeIdsLine = (digit) => {
 const removeIdsColumn = (digit) => {
     let cont = 0;
 
-    for (let i = digit + 10; limitsBotton.indexOf(i) === -1; i+=10) {
+    for (let i = digit + 10; limitsBotton.indexOf(i) === -1; i += 10) {
         arrTdId.splice(arrTdId.indexOf(i), 1);
         cont = i;
     }
-    cont+=10;
+    cont += 10;
     arrTdId.splice(arrTdId.indexOf(cont), 1);
     cont = 0;
-    
-    if(limitsTop.indexOf(digit) !== -1){
+
+    if (limitsTop.indexOf(digit) !== -1) {
         arrTdId.splice(arrTdId.indexOf(digit), 1);
-    }else{
-        for (let i = digit; limitsTop.indexOf(i) === -1; i-=10) {
+    } else {
+        for (let i = digit; limitsTop.indexOf(i) === -1; i -= 10) {
             arrTdId.splice(arrTdId.indexOf(i), 1);
             cont = i;
         }
-        
-        cont-=10;
+
+        cont -= 10;
         arrTdId.splice(arrTdId.indexOf(cont), 1);
     }
 
@@ -218,24 +232,36 @@ const removeIdsColumn = (digit) => {
 // FUNCAO QUE GARANTE QUE ELEMENTOS NAO OCUPEM A MESMA DIAGONAL E POR ISSO RETIRA TODOS
 // OS ID'S (arrTdId) DAS <td> DA DIAGONAL
 const removeIdsDiagonal = (digit) => {
-    let diagonalMain = [12,23,34,45,56,67,78,89,100];
+    let diagonalMain = [12, 23, 34, 45, 56, 67, 78, 89, 100];
+    let cont = digit;
     
-
-    if(diagonalMain.includes(digit)){
+    if (diagonalMain.includes(digit)) {
         digit = 0;
     }
-    else if(digit.toString().length === 2) {        
-        for(let i = digit; limitsLeftTop.includes(digit) === false;i-=11){
-            digit = i;
-        }
-    }
+    else if (digit.toString().length === 2) {
 
-    for (let i = 0; limitsRightBotton.includes(digit) === false; i += 11, digit += 11) {
-        if(!(arrTdId.includes(digit))){
-            arrTdId.splice(arrTdId.indexOf(digit), 1);
+
+        // SEO DIGITO FOR A FRONTEIRA NAO FAZ NADA,POIS JAH ESTA PRONTO
+        if (limitsLeftTop.indexOf(digit) !== -1) { }
+        else {
+            cont = digit;
+            for (let i = digit - 11; limitsLeftTop.indexOf(i) === -1; i -= 11) {
+                arrTdId.splice(arrTdId.indexOf(i), 1);
+                cont = i;
+            }
+            cont -= 11;
+            arrTdId.splice(arrTdId.indexOf(cont), 1);
         }
     }
-    arrTdId.splice(arrTdId.indexOf(digit), 1);
+    // alert('aqui');
+    
+    cont = digit;
+    for (let i = digit; limitsRightBotton.indexOf(i) === -1; i += 11) {
+        arrTdId.splice(arrTdId.indexOf(i), 1);
+        cont = i;
+    }
+    cont += 11;
+    arrTdId.splice(arrTdId.indexOf(cont), 1);
     return arrTdId;
 }
 
@@ -304,14 +330,14 @@ const newGame = () => {
     // DEFINICAO DEVARIAVEIS--------------------------------------------------------------------------------
 
     // ARRAY DE ANIMAIS
-    const zoo = ['abelha','arara', 'anta', 'boi', 'besouro', 'baleia', 'bode', 'cavalo', 'carneiro', 'enguia', 'ema', 'elefante', 'formiga', 'foca', 'falcão', 'gato', 'girafa', 'galinha', 'hiena', 'tatu']
+    const zoo = ['abelha', 'arara', 'anta', 'boi', 'besouro', 'baleia', 'bode', 'cavalo', 'carneiro', 'enguia', 'ema', 'elefante', 'formiga', 'foca', 'falcão', 'gato', 'girafa', 'galinha', 'hiena', 'tatu']
 
     removeChildrensTable();
 
     // CRIANDO A TABELA
     createTable();
 
-    
+
     arrTdId = returnAllTD(arrTd);
 
     // SELECIONA O ANIMAL E A REMOVE PARA NAO HAVER DUPLICACAO DE ANIMAIS NO TABULEIRO
@@ -320,7 +346,7 @@ const newGame = () => {
     const beast3 = zoo.splice(Math.floor(Math.random() * zoo.length), 1).toString();
 
     // IRA DETERMINARA QUAL TIPO DE ORGAZINAZACAO SE ENCONTRARAO AS PALAVRAS: HORIZONTAL, VERTICAL OU DIAGONAL
-    let typeOfOrganization = 2//Math.floor(Math.random() * (3 - 1) + 1);
+    let typeOfOrganization = 3//Math.floor(Math.random() * (3 - 1) + 1);
 
     // ARMAZENA O GRUPO <td> QUE CONTEM O ELEMENTO
     let arrGroup = [];
@@ -387,24 +413,26 @@ const newGame = () => {
     // ORGANIZACAO DAS PALAVRAS NA DIAGONAL
     else if (typeOfOrganization === 3) {
         // BEAST 1---------------------------------------------------------------------------------------------
-        let selectId1 = randomPositionDiagonal(beast1, arrTdId);
-        removeIdsDiagonal(selectId1, arrTdId, beast1);
+        let selectId1 = randomPositionDiagonal(beast1);
+        removeIdsDiagonal(selectId1, beast1);
+        
         arrGroup = insertBeastDiagonal(beast1, selectId1);
 
         elementsPositionsWin.push(arrGroup);
         arrGroup = [];
 
         // BEAST 2---------------------------------------------------------------------------------------------
-        let selectId2 = randomPositionDiagonal(beast2, arrTdId);
-        removeIdsDiagonal(selectId2, arrTdId, beast2);
+        let selectId2 = randomPositionDiagonal(beast2);
+        removeIdsDiagonal(selectId2, beast2);
+
         arrGroup = insertBeastDiagonal(beast2, selectId2);
 
         elementsPositionsWin.push(arrGroup);
         arrGroup = [];
 
         // BEAST 2---------------------------------------------------------------------------------------------
-        let selectId3 = randomPositionDiagonal(beast3, arrTdId);
-        removeIdsDiagonal(selectId3, arrTdId, beast3);
+        let selectId3 = randomPositionDiagonal(beast3);
+        removeIdsDiagonal(selectId3, beast3);
         arrGroup = insertBeastDiagonal(beast3, selectId3);
 
         elementsPositionsWin.push(arrGroup);
@@ -436,14 +464,19 @@ const newGame = () => {
     console.log(elementsPositionsWin);
 
     // INSERINDO O EVENTO NAS <td> DE VITÓRIA---------------------------------------------------------------
+    // USO DE CAPTURING
     for (let z = 0; z < elementsPositionsWin.length; z++) {
         let arrAux = elementsPositionsWin[z];
         for (let i = 0; i < arrAux.length; i++) {
             const element = document.getElementById(arrAux[i]);
             element.addEventListener('click', youFind)
         }
-
     }
+
+    // const tabela = document.getElementById('table');
+    // table.addEventListener('click',youFind);
+
+
 }
 
 newGame();
