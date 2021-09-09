@@ -356,7 +356,7 @@ const newGame = () => {
     const beast3 = zoo.splice(Math.floor(Math.random() * zoo.length), 1).toString();
 
     // IRA DETERMINARA QUAL TIPO DE ORGAZINAZACAO SE ENCONTRARAO AS PALAVRAS: HORIZONTAL, VERTICAL OU DIAGONAL
-    let typeOfOrganization = 3//Math.floor(Math.random() * (4 - 1) + 1);
+    let typeOfOrganization = Math.floor(Math.random() * (4 - 1) + 1);
 
     // ARMAZENA O GRUPO <td> QUE CONTEM O ELEMENTO
     let arrGroup = [];
