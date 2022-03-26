@@ -1,5 +1,7 @@
 # Entrega: Construa um Jogo de Azar
 
+Link App - https://kenzie-academy-brasil-developers.github.io/entrega-construa-um-jogo-de-azar-sprint-3-vitorsoaresf/ <br>
+
 Primeiro, faça o clone desse repositório.
 
 Implemente **pelo menos** um dos seguintes jogos usando HTML, CSS e JavaScript. Este será um projeto que você colocará em seu portfólio, então faça-o bonito e use a função do GitLab Pages para hospedar o jogo concluído para que qualquer um possa jogar.
